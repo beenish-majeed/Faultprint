@@ -1,13 +1,22 @@
 print("\n                  SYSTEM ANALYSIS                  ")
 print("_" * 50)
 
-print("\nProblem")
-problem = input("Enter your issue: ").strip()
+while True:
+    print("\nProblem")
+    problem = input("Enter your issue: ").strip()
 
-print("\n1. Another issue")
-print("2. Exit")
+    # future: understand and analyze the problem
 
-choice = input("Enter your choice: ").strip()
+    print("\n1. Another Issue")
+    print("2. Exit")
+    choice = input("Enter your choice: ").strip()
 
-if choice == "2": 
-    print("\nThanks for using!")
+    if choice == "1":
+        continue
+
+    elif choice == "2":
+        print("\nThanks for using!")
+        break
+
+    else:
+        print("Enter valid choice.")
