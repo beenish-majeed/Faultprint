@@ -1,3 +1,10 @@
+from models.problem_analysis import ProblemAnalysis
+
+problem1 = ProblemAnalysis()
+problem1.problem = problem   
+print(problem1.problem)
+
+
 print("\n                  SYSTEM ANALYSIS                  ")
 print("_" * 50)
 
