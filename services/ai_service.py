@@ -1,6 +1,8 @@
+from models.problem_analysis import ProblemAnalysis
 from google import genai
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 
@@ -8,24 +10,51 @@ api_key = os.getenv("API_KEY")
 
 client = genai.Client(api_key = api_key)
 
-def understand_problem(problem :str):
+def understand_problem(problem: str):
     prompt = f"""
-    You are helping diagnose a computer problem.
+You are helping diagnose computer problems.
 
-    Understand what the user actually means.
-    Do not assume predefined categories.
+First, determine whether the user's input is a computer-related problem.
 
-    Determine:
-    1. What the user's actual problem is.
-    2. Which computer system areas may be relevant.
-    3. What information should be investigated.
+If it IS a computer-related problem:
+Return ONLY valid JSON with exactly these keys:
+- problem: one short sentence describing the actual problem
+- areas: only relevant computer system areas
+- investigation: concise, actionable checks needed to investigate the problem
 
-    User's problem:
-    {problem}
-    """
+Rules for computer problems:
+- Be concise and specific.
+- No explanations.
+- No reasoning.
+- No recommendations or solutions.
+- Do not repeat the user's full message.
+- Include only relevant areas.
+
+If it is NOT a computer-related problem, such as a greeting,
+casual conversation, or general question:
+Respond normally in plain text.
+Do NOT return JSON.
+
+User's input:
+{problem}
+"""
+
     interaction = client.interactions.create(
         model="gemini-3.8-flash",
-        input= prompt
+        input=prompt
     )
-    
-    return interaction.output_text
+
+    response = interaction.output_text.strip()
+
+    try:
+        data = json.loads(response)
+
+        analysis = ProblemAnalysis()
+        analysis.problem = data["problem"]
+        analysis.areas = data["areas"]
+        analysis.investigation = data["investigation"]
+
+        return analysis
+
+    except json.JSONDecodeError:
+        return response

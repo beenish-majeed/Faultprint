@@ -11,7 +11,13 @@ while True:
     problem1 = ProblemAnalysis()
     problem1.problem = problem
     analysis = understand_problem(problem1.problem)
-    print(analysis)
+
+    if isinstance(analysis, ProblemAnalysis):
+        print("\nProblem:", analysis.problem)
+        print("Areas:", ", ".join(analysis.areas))
+        print("Investigation:", ", ".join(analysis.investigation))
+    else:
+        print(analysis)
 
     print("\n1. Another Issue")
     print("2. Exit")
