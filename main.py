@@ -1,8 +1,8 @@
 from models.problem_analysis import ProblemAnalysis
 from services.ai_service import understand_problem
 
-print("\n                  SYSTEM ANALYSIS                  ")
-print("_" * 50)
+print("\n                    SYSTEM ANALYSIS")
+print("_" * 55)
 
 while True:
     print("\nProblem")

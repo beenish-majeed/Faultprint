@@ -4,3 +4,5 @@ class ProblemAnalysis:
         self.problem: str = ""
         self.areas: list[str] = []
         self.investigation: list[str] = []
+
+if __name__ == "__main__":

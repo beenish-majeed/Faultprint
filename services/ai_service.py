@@ -58,3 +58,5 @@ User's input:
 
     except json.JSONDecodeError:
         return response
+
+if __name__ == "__main__":       
