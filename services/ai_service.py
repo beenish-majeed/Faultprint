@@ -10,6 +10,8 @@ api_key = os.getenv("API_KEY")
 
 client = genai.Client(api_key = api_key)
 
+print("API key loaded:", bool(api_key))
+
 def understand_problem(problem: str):
     prompt = f"""
 You are helping diagnose computer problems.
@@ -58,5 +60,4 @@ User's input:
 
     except json.JSONDecodeError:
         return response
-
-if __name__ == "__main__":       
+  

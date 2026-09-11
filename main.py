@@ -1,5 +1,6 @@
 from models.problem_analysis import ProblemAnalysis
 from services.ai_service import understand_problem
+from collectors.system_collector import collect_system_data
 
 print("\n                    SYSTEM ANALYSIS")
 print("_" * 55)
@@ -16,6 +17,9 @@ while True:
         print("\nProblem:", analysis.problem)
         print("Areas:", ", ".join(analysis.areas))
         print("Investigation:", ", ".join(analysis.investigation))
+
+        system_data = collect_system_data(analysis.areas)
+        print("\nSystem Data:", system_data)
     else:
         print(analysis)
 

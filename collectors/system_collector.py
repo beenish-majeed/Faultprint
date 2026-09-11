@@ -164,18 +164,37 @@ def get_temperature_info():
     return temperatures
 
 
-def collect_system_data():
-    return {
-        "CPU": get_cpu_info(),
-        "Memory": get_memory_info(),
-        "Disk": get_disk_info(),
-        "Top Processes": get_process_info(),
-        "Battery": get_battery_info(),
-        "Network": get_network_info(),
-        "Boot": get_boot_info(),
-        "Disk Partitions": get_disk_partitions(),
-        "Temperature": get_temperature_info(),
-    }
+def collect_system_data(areas):
+    system_data = {}
+
+    if "CPU" in areas:
+        system_data["CPU"] = get_cpu_info()
+
+    if "RAM" in areas:
+        system_data["Memory"] = get_memory_info()
+
+    if "Disk" in areas:
+        system_data["Disk"] = get_disk_info()
+
+    if "Processes" in areas:
+        system_data["Top Processes"] = get_process_info()
+
+    if "Battery" in areas:
+        system_data["Battery"] = get_battery_info()
+
+    if "Network" in areas:
+        system_data["Network"] = get_network_info()
+
+    if "Boot" in areas:
+        system_data["Boot"] = get_boot_info()
+
+    if "Disk Partitions" in areas:
+        system_data["Disk Partitions"] = get_disk_partitions()
+
+    if "Temperature" in areas:
+        system_data["Temperature"] = get_temperature_info()
+
+    return system_data
 
 
 def display_system_data(data):
@@ -196,5 +215,6 @@ def display_system_data(data):
 
 
 if __name__ == "__main__":
-    data = collect_system_data()
+    areas = ["CPU", "RAM", "Processes"]
+    data = collect_system_data(areas)
     display_system_data(data)
