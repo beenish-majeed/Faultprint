@@ -1,9 +1,5 @@
 from models.problem_analysis import ProblemAnalysis
-
-problem1 = ProblemAnalysis()
-problem1.problem = problem   
-print(problem1.problem)
-
+from services.ai_service import understand_problem
 
 print("\n                  SYSTEM ANALYSIS                  ")
 print("_" * 50)
@@ -11,8 +7,11 @@ print("_" * 50)
 while True:
     print("\nProblem")
     problem = input("Enter your issue: ").strip()
-
-    # future: understand and analyze the problem
+    
+    problem1 = ProblemAnalysis()
+    problem1.problem = problem
+    analysis = understand_problem(problem1.problem)
+    print(analysis)
 
     print("\n1. Another Issue")
     print("2. Exit")
