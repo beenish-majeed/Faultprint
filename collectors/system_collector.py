@@ -164,54 +164,26 @@ def get_temperature_info():
     return temperatures
 
 
-def collect_system_data(areas):
+def collect_system_data(required_data):
+    available_data = {
+        "CPU information": get_cpu_info,
+        "Memory information": get_memory_info,
+        "Disk information": get_disk_info,
+        "Running processes": get_process_info,
+        "Battery information": get_battery_info,
+        "Network information": get_network_info,
+        "Boot and uptime information": get_boot_info,
+        "Disk partition information": get_disk_partitions,
+        "Temperature information": get_temperature_info,
+    }
+
     system_data = {}
 
-    if "CPU" in areas:
-        system_data["CPU"] = get_cpu_info()
-
-    if "RAM" in areas:
-        system_data["Memory"] = get_memory_info()
-
-    if "Disk" in areas:
-        system_data["Disk"] = get_disk_info()
-
-    if "Processes" in areas:
-        system_data["Top Processes"] = get_process_info()
-
-    if "Battery" in areas:
-        system_data["Battery"] = get_battery_info()
-
-    if "Network" in areas:
-        system_data["Network"] = get_network_info()
-
-    if "Boot" in areas:
-        system_data["Boot"] = get_boot_info()
-
-    if "Disk Partitions" in areas:
-        system_data["Disk Partitions"] = get_disk_partitions()
-
-    if "Temperature" in areas:
-        system_data["Temperature"] = get_temperature_info()
+    for data_name in required_data:
+        if data_name in available_data:
+            system_data[data_name] = available_data[data_name]()
 
     return system_data
-
-
-def display_system_data(data):
-    print("              COMPUTER HEALTH REPORT")
-    print("_" * 55)
-
-    for category, information in data.items():
-        print(f"\n[{category}]")
-
-        if isinstance(information, list):
-            for item in information:
-                print(f"  {item}")
-        else:
-            for key, value in information.items():
-                print(f"  {key}: {value}")
-
-    print("\n" + "_" * 55)
 
 
 if __name__ == "__main__":

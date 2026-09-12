@@ -59,44 +59,49 @@ User's input:
     except json.JSONDecodeError:
         return response
 
-def analyze_system_data(problem: str, investigation: list[str], system_data: dict):
+
+def select_system_data(problem: str, investigation: list[str]):
+    available_data = [
+        "CPU information",
+        "Memory information",
+        "Disk information",
+        "Running processes",
+        "Battery information",
+        "Network information",
+        "Boot and uptime information",
+        "Disk partition information",
+        "Temperature information"
+    ]
+
     prompt = f"""
-You are analyzing a computer problem using actual system data.
+You are deciding what computer data should be collected
+to investigate a user's problem.
 
 User's problem:
 {problem}
 
-Investigation requested:
+Investigation:
 {investigation}
 
-Actual system data:
-{system_data}
+Available computer data:
+{available_data}
 
-Analyze the data in the context of the user's problem.
+Choose only the data that is relevant to investigating
+the user's problem.
 
-Return ONLY valid JSON with exactly these keys:
-- findings
-- likely_cause
+Return ONLY valid JSON with exactly this key:
+- required_data
 
-"findings" must be a list of objects.
-Each object must contain:
-- area
-- status
-- details
+"required_data" must be a list containing only items
+from the available computer data list.
 
 Rules:
-- Consider only the data that is relevant to the user's problem.
-- Determine whether each relevant area appears normal or problematic based on the actual data and context.
-- Do not use fixed percentage rules.
-- Do not invent information that is not present in the system data.
-- Do not claim something is the cause unless the available data supports it.
-- If the data is insufficient to determine the cause, say so.
-- Keep the findings concise.
-- "likely_cause" should be a short explanation of the most likely cause, or say that the cause cannot be determined from the available data.
-- Do not provide solutions yet.
-- Do not include reasoning outside the JSON.
-
-User problem, investigation, and system data are provided above.
+- Understand the meaning of the user's problem.
+- Match concepts semantically.
+- Do not require exact wording between the investigation
+  and available data.
+- Select only data that could help investigate the problem.
+- Do not provide explanations or solutions.
 """
 
     try:
@@ -105,11 +110,17 @@ User problem, investigation, and system data are provided above.
             input=prompt
         )
     except Exception as error:
-        return f"Gemini analysis failed: {error}"
+        return f"Gemini data selection failed: {error}"
 
     response = interaction.output_text.strip()
 
+    if response.startswith("```"):
+        response = response.replace("```json", "")
+        response = response.replace("```", "")
+        response = response.strip()
+
     try:
-        return json.loads(response)
-    except json.JSONDecodeError:
+        data = json.loads(response)
+        return data["required_data"]
+    except (json.JSONDecodeError, KeyError):
         return response

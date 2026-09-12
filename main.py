@@ -1,5 +1,5 @@
 from models.problem_analysis import ProblemAnalysis
-from services.ai_service import understand_problem, analyze_system_data
+from services.ai_service import understand_problem, select_system_data
 from collectors.system_collector import collect_system_data
 
 print("\n                    SYSTEM ANALYSIS")
@@ -18,12 +18,20 @@ while True:
         print("Areas:", ", ".join(analysis.areas))
         print("Investigation:", ", ".join(analysis.investigation))
 
-        system_data = collect_system_data(analysis.areas)
-        analysis_result = analyze_system_data(analysis.problem, analysis.investigation, system_data)
+        required_data = select_system_data(
+            analysis.problem,
+            analysis.investigation
+        )
+
+        print("\nRequired Data:", required_data)
+
+        system_data = collect_system_data(required_data)
+
         print("\nSystem Data:", system_data)
+
     else:
         print(analysis)
-
+        
     print("\n1. Another Issue")
     print("2. Exit")
     choice = input("Enter your choice: ").strip()
