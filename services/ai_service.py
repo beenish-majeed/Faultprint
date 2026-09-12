@@ -124,3 +124,65 @@ Rules:
         return data["required_data"]
     except (json.JSONDecodeError, KeyError):
         return response
+
+def analyze_system_data(problem: str, investigation: list[str], system_data: dict):
+    prompt = f"""
+You are analyzing a computer problem using actual system data.
+
+User's problem:
+{problem}
+
+Investigation:
+{investigation}
+
+Actual system data:
+{system_data}
+
+Analyze the actual system data in the context of the user's problem.
+
+Return ONLY valid JSON with exactly these keys:
+- findings
+- likely_cause
+
+"findings" must be a list of objects.
+Each object must contain:
+- area
+- status
+- details
+
+Rules:
+- Consider only data relevant to the user's problem.
+- Use the actual values in the system data.
+- Determine whether each relevant area appears normal,
+  problematic, or inconclusive based on the context.
+- Do not use fixed percentage thresholds.
+- Do not invent information that is not present.
+- Do not claim something is the cause unless the data supports it.
+- If the available data is insufficient, say so.
+- Keep the findings concise.
+- "likely_cause" must be a short explanation of the
+  most likely cause, or say that it cannot be determined
+  from the available data.
+- Do not provide solutions yet.
+- Do not include reasoning outside the JSON.
+"""
+
+    try:
+        interaction = client.interactions.create(
+            model="gemini-3.8-flash",
+            input=prompt
+        )
+    except Exception as error:
+        return f"Gemini system analysis failed: {error}"
+
+    response = interaction.output_text.strip()
+
+    if response.startswith("```"):
+        response = response.replace("```json", "")
+        response = response.replace("```", "")
+        response = response.strip()
+
+    try:
+        return json.loads(response)
+    except json.JSONDecodeError:
+        return response
