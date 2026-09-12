@@ -138,33 +138,26 @@ Investigation:
 Actual system data:
 {system_data}
 
-Analyze the actual system data in the context of the user's problem.
+"summary" must be a short human-readable summary of the
+overall system condition in relation to the user's problem.
 
-Return ONLY valid JSON with exactly these keys:
-- findings
-- likely_cause
+"findings" must be a list of short human-readable statements.
 
-"findings" must be a list of objects.
-Each object must contain:
-- area
-- status
-- details
+"likely_cause" must be a short human-readable explanation
+of the most likely cause, or clearly state that the cause
+cannot be determined from the available data.
 
 Rules:
-- Consider only data relevant to the user's problem.
-- Use the actual values in the system data.
-- Determine whether each relevant area appears normal,
-  problematic, or inconclusive based on the context.
+- Use the actual system data.
+- Consider the user's problem and investigation.
+- Explain what appears normal, problematic, or inconclusive.
 - Do not use fixed percentage thresholds.
-- Do not invent information that is not present.
-- Do not claim something is the cause unless the data supports it.
-- If the available data is insufficient, say so.
-- Keep the findings concise.
-- "likely_cause" must be a short explanation of the
-  most likely cause, or say that it cannot be determined
-  from the available data.
+- Do not invent information.
+- If data is unavailable, clearly say that it is unavailable.
 - Do not provide solutions yet.
-- Do not include reasoning outside the JSON.
+- Do not use technical JSON-style fields such as "area",
+  "status", or "details" inside findings.
+- Keep the language simple and understandable to a normal computer user.
 """
 
     try:

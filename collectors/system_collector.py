@@ -185,6 +185,26 @@ def collect_system_data(required_data):
 
     return system_data
 
+def display_system_data(data):
+    print("\nSystem Data")
+
+    for category, information in data.items():
+        print(f"\n{category}")
+
+        if category == "Running processes":
+            for process in information:
+                print(
+                    f"  {process['Name']} — "
+                    f"CPU: {process['CPU']}%, "
+                    f"Memory: {process['Memory']}%"
+                )
+
+        elif isinstance(information, dict):
+            for key, value in information.items():
+                print(f"  {key}: {value}")
+
+        else:
+            print(f"  {information}")
 
 if __name__ == "__main__":
     areas = ["CPU", "RAM", "Processes"]

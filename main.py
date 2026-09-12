@@ -1,6 +1,6 @@
 from models.problem_analysis import ProblemAnalysis
 from services.ai_service import understand_problem, select_system_data, analyze_system_data
-from collectors.system_collector import collect_system_data
+from collectors.system_collector import collect_system_data, display_system_data
 
 print("\n                    SYSTEM ANALYSIS")
 print("_" * 55)
@@ -14,20 +14,29 @@ while True:
     analysis = understand_problem(problem1.problem)
 
     if isinstance(analysis, ProblemAnalysis):
-        print("\nProblem:", analysis.problem)
-        print("Areas:", ", ".join(analysis.areas))
-        print("Investigation:", ", ".join(analysis.investigation))
+        print("\nProblem")
+        print(analysis.problem)
+
+        print("\nAreas")
+        print(", ".join(analysis.areas))
+        
+        print("\nInvestigation")
+        for item in analysis.investigation:
+            print(f"• {item}")
 
         required_data = select_system_data(
             analysis.problem,
             analysis.investigation
         )
 
-        print("\nRequired Data:", required_data)
+        print("\nRequired Data")
+
+        for item in required_data:
+            print(f"• {item}")
 
         system_data = collect_system_data(required_data)
 
-        print("\nSystem Data:", system_data)
+        display_system_data(system_data)
 
         analysis_result = analyze_system_data(
             analysis.problem,
@@ -35,7 +44,20 @@ while True:
             system_data
         )
 
-        print("\nAnalysis:", analysis_result)
+        print("\nAnalysis")
+
+        if isinstance(analysis_result, dict):
+            print(analysis_result["summary"])
+
+            print("\nFindings")
+            for finding in analysis_result["findings"]:
+                print(f"• {finding}")
+
+            print("\nLikely Cause")
+            print(analysis_result["likely_cause"])
+
+        else:
+            print(analysis_result)
 
     else:
         print(analysis)
