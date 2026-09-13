@@ -10,7 +10,7 @@ api_key = os.getenv("API_KEY")
 
 client = genai.Client(api_key = api_key)
 
-def understand_problem(problem: str):
+async def understand_problem(problem: str):
     prompt = f"""
 You are helping diagnose computer problems.
 
@@ -39,10 +39,16 @@ User's input:
 {problem}
 """
 
-    interaction = client.interactions.create(
-        model="gemini-3.8-flash",
-        input=prompt
-    )
+    try:
+        interaction = await client.aio.interactions.create(
+            model="gemini-3.8-flash",
+            input=prompt
+        )
+
+    except Exception as error:
+        print(f"\nGemini is temporarily unavailable.")
+        print(f"Error: {type(error).__name__}")
+        return None
 
     response = interaction.output_text.strip()
 
@@ -60,7 +66,7 @@ User's input:
         return response
 
 
-def select_system_data(problem: str, investigation: list[str]):
+async def select_system_data(problem: str, investigation: list[str]):
     available_data = [
         "CPU information",
         "Memory information",
@@ -105,12 +111,15 @@ Rules:
 """
 
     try:
-        interaction = client.interactions.create(
+        interaction = await client.aio.interactions.create(
             model="gemini-3.8-flash",
             input=prompt
         )
+
     except Exception as error:
-        return f"Gemini data selection failed: {error}"
+        print(f"\nGemini is temporarily unavailable.")
+        print(f"Error: {type(error).__name__}")
+        return None
 
     response = interaction.output_text.strip()
 
@@ -125,7 +134,7 @@ Rules:
     except (json.JSONDecodeError, KeyError):
         return response
 
-def analyze_system_data(problem: str, investigation: list[str], system_data: dict):
+async def analyze_system_data(problem: str, investigation: list[str], system_data: dict):
     prompt = f"""
 You are analyzing a computer problem using actual system data.
 
@@ -161,12 +170,15 @@ Rules:
 """
 
     try:
-        interaction = client.interactions.create(
+        interaction = await client.aio.interactions.create(
             model="gemini-3.8-flash",
             input=prompt
         )
+
     except Exception as error:
-        return f"Gemini system analysis failed: {error}"
+        print("\nGemini system analysis failed.")
+        print(f"Error: {type(error).__name__}")
+        return None
 
     response = interaction.output_text.strip()
 
@@ -177,5 +189,7 @@ Rules:
 
     try:
         return json.loads(response)
+
     except json.JSONDecodeError:
-        return response
+        print("\nGemini returned an invalid response.")
+        return None
